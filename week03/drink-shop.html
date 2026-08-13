@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การบ้านครั้งที่ 3 · เว็บสั่งเครื่องดื่มหน้าร้าน (Starter)</title>
+    <style>
+        /* ==========================================================
+     CSS ธีมคาเฟ่พรีเมียม (คงสไตล์เดิมไว้ตามที่ต้องการ)
+     ========================================================== */
+        :root {
+            --bg: #fdfbf7;
+            --card: #ffffff;
+            --ink: #4a3629;
+            --muted: #9e8473;
+            --brand: #5c3a21;
+            --brand-soft: #f0e6dd;
+            --accent: #3a7d54;
+            --accent-glow: rgba(58, 125, 84, 0.4);
+            --danger: #c0392b;
+            --line: #e3d5ca;
+        }
+
+        body.dark {
+            --bg: #261a15;
+            --card: #36261f;
+            --ink: #f5eedc;
+            --muted: #a89488;
+            --brand: #d6bfae;
+            --brand-soft: #4a3629;
+            --accent: #5db07a;
+            --accent-glow: rgba(93, 176, 122, 0.3);
+            --danger: #e74c3c;
+            --line: #523f35;
+        }
+
+        @keyframes warmBreeze {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', 'Sarabun', sans-serif;
+            background: linear-gradient(120deg, var(--bg), var(--brand-soft), var(--bg));
+            background-size: 200% 200%;
+            animation: warmBreeze 8s ease infinite;
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        @keyframes floatCafe {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-6px) rotate(0.5deg);
+            }
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--brand), #361f10);
+            color: #fff;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(92, 58, 33, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            animation: floatCafe 4s ease-in-out infinite;
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 16px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media(max-width:720px) {
+            .wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 3px solid var(--line);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            transition: all 0.5s;
+            position: relative;
+        }
+
+        .card h2 {
+            margin: 0 0 20px;
+            font-size: 22px;
+            color: var(--brand);
+            font-weight: 800;
+            border-bottom: 3px dashed var(--brand-soft);
+            padding-bottom: 12px;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg);
+            border: 2px solid var(--line);
+            color: var(--ink);
+            border-radius: 14px;
+            padding: 16px 20px;
+            font-size: 17px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            /* สีปล่อยให้ JS จัดการตามโจทย์ B5 */
+        }
+
+        .menu-item .price {
+            font-weight: 800;
+            color: var(--accent);
+            background: var(--brand-soft);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        @keyframes bounceInDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateY(10px) scale(1.05);
+            }
+
+            80% {
+                transform: translateY(-5px) scale(0.98);
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        #order-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #order-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 8px;
+            border-bottom: 2px dashed var(--line);
+            animation: bounceInDrop 0.5s forwards;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            25%,
+            75% {
+                transform: rotate(-15deg) scale(1.2);
+            }
+
+            50% {
+                transform: rotate(15deg) scale(1.2);
+            }
+        }
+
+        #order-list li .del {
+            background: var(--brand-soft);
+            border: none;
+            color: var(--danger);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        #order-list li .del:hover {
+            animation: wiggle 0.4s infinite;
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .empty {
+            color: var(--muted);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .summary {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 3px solid var(--brand);
+            display: flex;
+            justify-content: space-between;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .summary .total {
+            color: var(--accent);
+            font-size: 22px;
+        }
+
+        form {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px 18px;
+            border: 3px solid var(--line);
+            border-radius: 14px;
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 600;
+            background: var(--bg);
+            color: var(--ink);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        button.action {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 24px;
+            font-size: 17px;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        #message {
+            margin-top: 20px;
+            min-height: 24px;
+            font-weight: 800;
+            font-size: 16px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .ok {
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .err {
+            color: #fff;
+            background: var(--danger);
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.3);
+        }
+
+        .ghost {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            padding: 8px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        #clear {
+            background: transparent;
+            color: var(--danger);
+            border: 2px dashed var(--danger);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>☕ CAFE PREMIUM</h1>
+        <!-- โบนัส B2: ปุ่มเปลี่ยนโหมด -->
+        <button id="dark-toggle" class="ghost">🌙 โหมดกลางคืน</button>
+    </header>
+
+    <div class="wrap">
+        <!-- ================= ฝั่งซ้าย: เมนู ================= -->
+        <section class="card">
+            <h2>📋 เมนูเครื่องดื่ม</h2>
+            <!-- โบนัส B1: ช่องค้นหา -->
+            <input type="text" id="search" placeholder="🔍 ค้นหาเมนูโปรดของคุณ..."
+                style="width:100%;margin-bottom:20px">
+
+            <div id="menu"></div>
+        </section>
+
+        <!-- ================= ฝั่งขวา: ออเดอร์ + ยืนยัน ================= -->
+        <section class="card">
+            <h2>🛍️ ตะกร้าเครื่องดื่ม</h2>
+            <ul id="order-list">
+                <li class="empty" id="empty-hint">ยังไม่ได้เลือกเครื่องดื่มเลยครับ 🥺</li>
+            </ul>
+
+            <div class="summary">
+                <span>รวมทั้งหมด: <span id="count">0</span> แก้ว</span>
+                <span class="total">ยอดสุทธิ <span id="total">0</span> ฿</span>
+            </div>
+
+            <!-- โบนัส B3: ปุ่มล้างออเดอร์ -->
+            <button id="clear" class="ghost"
+                style="margin-top:20px; width: 100%; font-size: 15px; padding: 12px; border-radius: 14px;">🗑
+                ล้างตะกร้าทั้งหมด</button>
+
+            <form id="order-form">
+                <input type="text" id="customer" placeholder="ชื่อลูกค้า (เช่น คุณบาริสต้า)">
+                <button type="submit" class="action">ชงเลย!</button>
+            </form>
+            <div id="message"></div>
+        </section>
+    </div>
+
+    <script>
+        /* ============================================================
+           การบ้านครั้งที่ 3 · เว็บสั่งเครื่องดื่มหน้าร้าน
+           ============================================================ */
+
+        const drinks = [
+            { name: "อเมริกาโน่เย็น", price: 45 },
+            { name: "ลาเต้ร้อน", price: 50 },
+            { name: "ชาไทย", price: 40 },
+            { name: "โกโก้ปั่น", price: 55 },
+            { name: "น้ำผึ้งมะนาว", price: 35 }
+        ];
+
+        let order = [];
+
+        // อ้างอิง element ที่ต้องใช้
+        const menu = document.getElementById("menu");
+        const orderList = document.getElementById("order-list");
+        const countEl = document.getElementById("count");
+        const totalEl = document.getElementById("total");
+        const form = document.getElementById("order-form");
+        const customer = document.getElementById("customer");
+        const message = document.getElementById("message");
+
+        const search = document.getElementById("search");
+        const darkToggle = document.getElementById("dark-toggle");
+        const clearBtn = document.getElementById("clear");
+
+        // ==========================================================
+        // ข้อ 1 · สร้างเมนูจากข้อมูล (ใช้ forEach + createElement)
+        // ==========================================================
+        drinks.forEach(d => {
+            const btn = document.createElement("button");
+            btn.className = "menu-item";
+            btn.innerHTML = `<span>${d.name}</span><span class="price">${d.price} ฿</span>`;
+
+            // เก็บข้อมูลไว้กับปุ่มด้วย dataset
+            btn.dataset.name = d.name;
+            btn.dataset.price = d.price;
+
+            menu.appendChild(btn);
+        });
+
+        // ==========================================================
+        // ข้อ 3 · ยอดรวมอัตโนมัติด้วย render() เดียว
+        // ==========================================================
+        function render() {
+            // ล้างลิสต์เดิมก่อน
+            orderList.innerHTML = "";
+
+            if (order.length === 0) {
+                const emptyLi = document.createElement("li");
+                emptyLi.className = "empty";
+                emptyLi.id = "empty-hint";
+                emptyLi.textContent = "ยังไม่ได้เลือกเครื่องดื่มเลยครับ 🥺"; // ใช้ textContent
+                emptyLi.style.animation = "none";
+                orderList.appendChild(emptyLi);
+
+                countEl.textContent = "0";
+                totalEl.textContent = "0";
+                return;
+            }
+
+            let totalSum = 0;
+
+            // วาด order ใหม่ทั้งหมด พร้อมสร้างปุ่มลบ (✕)
+            order.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `<span>${item.name} <span style="color:var(--muted); font-size:14px; font-weight:normal;">(${item.price} ฿)</span></span>
+                    <button class="del" data-index="${index}">✕</button>`;
+                orderList.appendChild(li);
+                totalSum += Number(item.price);
+            });
+
+            // แสดงยอดเงินรวมและจำนวนแก้ว
+            countEl.textContent = order.length;
+            totalEl.textContent = totalSum;
+        }
+
+        // ==========================================================
+        // ข้อ 2 · รับออเดอร์ด้วย Delegation (คลิกเมนู)
+        // ==========================================================
+        menu.addEventListener("click", (e) => {
+            const btn = e.target.closest(".menu-item");
+            if (btn) {
+                const name = btn.dataset.name;
+                const price = Number(btn.dataset.price);
+
+                order.push({ name, price });
+                render();
+
+                message.className = "";
+                message.textContent = "";
+            }
+        });
+
+        // ==========================================================
+        // ข้อ 2 · ลบทีละแก้วด้วย Delegation (คลิกปุ่ม ✕)
+        // ==========================================================
+        orderList.addEventListener("click", (e) => {
+            if (e.target.closest(".del")) {
+                const index = Number(e.target.closest(".del").dataset.index);
+                order.splice(index, 1);
+                render();
+            }
+        });
+
+        // ==========================================================
+        // ข้อ 4 · ชื่อลูกค้า + ยืนยันออเดอร์ (ดัก submit + กัน XSS)
+        // โบนัส B4 · กด Enter ในช่องชื่อแล้วไม่รีเฟรชหน้า (preventDefault ครอบคลุมแล้ว)
+        // ==========================================================
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const customerName = customer.value.trim();
+
+            // ตรวจสอบชื่อว่าง หรือไม่ได้สั่งอะไร
+            if (!customerName || order.length === 0) {
+                message.className = "err";
+                message.textContent = "⚠️ รบกวนกรอกชื่อและสั่งเครื่องดื่มก่อนนะครับ!"; // textContent กัน XSS
+            } else {
+                message.className = "ok";
+                // แสดงสรุปด้วย textContent ป้องกัน XSS อย่างสมบูรณ์
+                message.textContent = `ออเดอร์ของคุณ ${customerName} ทั้งหมด ${order.length} แก้ว รวม ${totalEl.textContent} บาท`;
+            }
+        });
+
+        // เรียก render ครั้งแรก
+        render();
+
+        // ==========================================================
+        // 🎁 โบนัส (B1, B2, B3, B5)
+        // ==========================================================
+
+        // B1 · ค้นหาเมนูแบบพิมพ์สด (ซ่อน/แสดง element.style.display)
+        search.addEventListener("input", (e) => {
+            const keyword = e.target.value.trim().toLowerCase();
+            const items = menu.querySelectorAll(".menu-item");
+
+            items.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                if (name.includes(keyword)) {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+
+        // B2 · โหมดมืด (dark mode)
+        darkToggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            if (document.body.classList.contains("dark")) {
+                darkToggle.textContent = "☀️ โหมดสว่าง";
+            } else {
+                darkToggle.textContent = "🌙 โหมดกลางคืน";
+            }
+        });
+
+        // B3 · ปุ่มล้างออเดอร์
+        clearBtn.addEventListener("click", () => {
+            order = [];
+            render();
+            message.className = "";
+            message.textContent = "";
+        });
+
+        // B5 · hover เมนูเปลี่ยนสี (ใช้ JavaScript mouseover / mouseout)
+        menu.addEventListener("mouseover", (e) => {
+            const btn = e.target.closest(".menu-item");
+            if (btn) {
+                btn.style.backgroundColor = "var(--brand)";
+                btn.style.borderColor = "var(--brand)";
+                btn.style.color = "#fff";
+                btn.style.transform = "scale(1.03) rotate(-1deg)";
+                btn.style.boxShadow = "0 8px 20px rgba(92, 58, 33, 0.2)";
+            }
+        });
+
+        menu.addEventListener("mouseout", (e) => {
+            const btn = e.target.closest(".menu-item");
+            if (btn) {
+                // ล้างค่า style กลับไปใช้ตาม CSS เดิม
+                btn.style.backgroundColor = "";
+                btn.style.borderColor = "";
+                btn.style.color = "";
+                btn.style.transform = "";
+                btn.style.boxShadow = "";
+            }
+        });
+
+    </script>
+</body>
+
+</html>
